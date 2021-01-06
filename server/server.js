@@ -11,13 +11,20 @@ app.post('/todos', (req, res)=>{
 var newTodo = new Todo({
     text:req.body.text
 });
-
 newTodo.save().then((doc)=>{
     res.send(doc)
 }, (e)=>{
     res.status(400).send(e);
 })
 });
+
+app.get('/todos', (req,res)=>{
+    Todo.find().then((todos)=>{
+        res.send({todos})
+    })
+},(err)=>{
+    res.status(400).send(err)
+})
 
 app.listen(5000, ()=>{
     console.log('App started at port 5000')
