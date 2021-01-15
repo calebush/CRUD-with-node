@@ -5,7 +5,7 @@ const {Todo} = require('./../server/models/todo');
 const {Users} = require('./../server/models/user');
 
 // var id = '57bf38394b39c93d2a557e9811';
-//
+
 // if (!ObjectID.isValid(id)) {
 //   console.log('ID not valid');
 // }
@@ -15,7 +15,7 @@ const {Users} = require('./../server/models/user');
 // }).then((todos) => {
 //   console.log('Todos', todos);
 // });
-//
+
 // Todo.findOne({
 //   _id: id
 // }).then((todo) => {

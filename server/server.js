@@ -8,6 +8,8 @@ const app = express();
 
 app.use(bodyParser.json())
 
+const port = process.env.PORT || 5000;
+
 app.post('/todos', (req, res)=>{
 var newTodo = new Todo({
     text:req.body.text
@@ -46,9 +48,27 @@ res.status(400).send()
 })
 })
 
+//DELETE BY ID
+app.delete('/todos/:id', (req, res)=>{
+    var id =req.params.id
 
-app.listen(5000, ()=>{
-    console.log('App started at port 5000')
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send()
+    }
+    Todo.findByIdAndRemove(id).then((todo)=>{
+        if(!todo){
+            return res.status(404).send()
+        }
+    res.send(todo)
+    }).catch((e)=>{
+        res.status(400).send();
+    })
+   
+})
+
+
+app.listen(port, ()=>{
+    console.log(`App started at port ${port}`)
 })
 
 
