@@ -3,6 +3,8 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const { Todo } = require('./models/Todo');
 const{ObjectID}= require('mongodb');
+const _=require('lodash');
+const { Users } = require('./models/User');
 
 const app = express();
 
@@ -65,6 +67,46 @@ app.delete('/todos/:id', (req, res)=>{
     })
    
 })
+
+//ROUTE TO UPDATE
+app.patch('/todos/:id', (req,res)=>{
+    var id = req.params.id;
+    const body = _.pick(req.body, ["text","completed"]);
+
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send();
+    }
+    if(_.isBoolean(body.completed) && body.completed){
+        body.completeAt = new Date().getTime();
+    }else{
+        body.completed = false;
+        body.completeAt = null;
+    }
+
+    Todo.findByIdAndUpdate(id, {$set:body}, {new:true}).then((todo)=>{
+        if(!todo){
+            res.status(400).send()
+        }
+        res.send({todo});
+    }).catch((err)=>{
+        res.status(400).send();
+    })
+})
+
+//POST /users  
+app.post('/users', (req, res)=>{
+    var body = _.pick(req.body, ['email', 'password']);
+    var user = new Users(body);
+
+    user.save().then(()=>{
+       return user.generateAuthToken();
+    }).then((token)=>{
+        res.header('x-auth', token).send(user)
+    }).catch((e)=>{
+        res.status(400).send(e);
+    })
+
+});
 
 
 app.listen(port, ()=>{
