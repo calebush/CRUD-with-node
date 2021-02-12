@@ -5,6 +5,7 @@ const { Todo } = require('./models/Todo');
 const{ObjectID}= require('mongodb');
 const _=require('lodash');
 const { Users } = require('./models/User');
+const {authenticate}  = require('./middleware/authenticate');
 
 const app = express();
 
@@ -105,7 +106,14 @@ app.post('/users', (req, res)=>{
     }).catch((e)=>{
         res.status(400).send(e);
     })
+});
 
+
+
+
+//Private Route Auth Middleware
+app.get('/users/me', authenticate, (req,res)=>{
+    res.send(req.user)
 });
 
 
